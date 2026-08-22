@@ -1,0 +1,17 @@
+{
+  "name": "膳食本",
+  "short_name": "膳食本",
+  "description": "饮食、自制批次和健身记录",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3eadc",
+  "theme_color": "#f3eadc",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
