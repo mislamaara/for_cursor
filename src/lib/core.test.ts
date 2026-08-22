@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { consumeBatch, pickOpenBatch, remainingLabel } from "./batches";
+import { consumeBatch, pickOpenBatch, remainingLabel, restoreBatch } from "./batches";
 import { nutrientsForPortions } from "./nutrition";
 import { parseQuickLog } from "./parser";
 import { buildAiSummary } from "./aiSummary";
@@ -73,6 +73,12 @@ describe("batch linking", () => {
 
   it("rejects eating more than remaining", () => {
     expect(() => consumeBatch(batch, 40)).toThrow(/只剩/);
+  });
+
+  it("restores remaining when deleting a logged portion", () => {
+    const next = consumeBatch(batch, 4);
+    expect(next.remainingAmount).toBe(18);
+    expect(restoreBatch(next, 4).remainingAmount).toBe(22);
   });
 
   it("splits recipe nutrition across 30 pieces", () => {

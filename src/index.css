@@ -226,10 +226,51 @@ h2 {
 
 .food-item {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 4px 12px;
+  grid-template-columns: 1fr auto auto;
+  gap: 4px 10px;
+  align-items: start;
   padding: 10px 0;
   border-top: 1px dashed var(--line);
+}
+
+.btn.tiny {
+  padding: 4px 10px;
+  font-size: 12px;
+  min-height: 28px;
+}
+
+.btn.linkish {
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  padding: 0;
+  min-height: auto;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn.linkish:hover {
+  color: var(--danger);
+}
+
+.photo-wrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.photo-wrap button {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(42, 35, 24, 0.72);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .food-item:first-child {

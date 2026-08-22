@@ -3,13 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { PageHeader } from "../components/PageHeader";
 import { db } from "../db";
-import { deleteFood } from "../lib/actions";
+import { deleteBatch, deleteFood } from "../lib/actions";
 import { batchTitle, eatenAmount, formatQty, remainingLabel } from "../lib/batches";
 import { formatDate } from "../lib/dates";
 import { formatNutrientLine, nutrientsForPortions, perPortion } from "../lib/nutrition";
 
 export function BatchPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const data = useLiveQuery(async () => {
     if (!id) return false as const;
     const batch = await db.batches.get(id);
@@ -70,7 +71,14 @@ export function BatchPage() {
                       {food.notes ? ` · ${food.notes}` : ""}
                     </div>
                   </div>
-                  <button className="btn ghost" type="button" onClick={() => deleteFood(food.id)}>
+                  <button
+                    className="btn ghost"
+                    type="button"
+                    onClick={() => {
+                      const msg = `撤销 ${formatDate(food.date)} 的 ${formatQty(food.amount, food.unit)}？会加回库存。`;
+                      if (confirm(msg)) void deleteFood(food.id);
+                    }}
+                  >
                     撤销
                   </button>
                 </div>
@@ -78,6 +86,29 @@ export function BatchPage() {
             ))}
           </ul>
         )}
+      </div>
+
+      <div className="card">
+        <h2>管理</h2>
+        <p className="muted tiny">
+          删除整批会一并去掉所有吃饭记录。如果只是记错了，用上面的「撤销」或去日记里删单条。
+        </p>
+        <button
+          className="btn danger"
+          type="button"
+          style={{ marginTop: 10 }}
+          onClick={async () => {
+            const msg =
+              sorted.length > 0
+                ? `删除「${batchTitle(recipe, batch)}」？会同时删掉 ${sorted.length} 条吃饭记录。`
+                : `删除「${batchTitle(recipe, batch)}」？`;
+            if (!confirm(msg)) return;
+            await deleteBatch(batch.id);
+            navigate("/kitchen");
+          }}
+        >
+          删除这一批
+        </button>
       </div>
     </div>
   );

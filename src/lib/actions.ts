@@ -69,6 +69,24 @@ export async function deleteFood(id: string): Promise<void> {
   });
 }
 
+export async function deleteWorkout(id: string): Promise<void> {
+  await db.workouts.delete(id);
+}
+
+export async function deletePhoto(id: string): Promise<void> {
+  await db.photos.delete(id);
+}
+
+export async function deleteBatch(id: string): Promise<void> {
+  await db.transaction("rw", db.foods, db.batches, async () => {
+    const foods = await db.foods.where("batchId").equals(id).toArray();
+    for (const food of foods) {
+      await db.foods.delete(food.id);
+    }
+    await db.batches.delete(id);
+  });
+}
+
 export async function applyQuickLog(input: {
   text: string;
   date?: string;

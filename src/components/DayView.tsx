@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db";
+import { deleteFood, deletePhoto, deleteWorkout } from "../lib/actions";
 import { addDays, formatDate } from "../lib/dates";
 import { batchTitle, formatQty, isOpen, remainingLabel } from "../lib/batches";
 import { formatNutrient, sumOptional } from "../lib/nutrition";
@@ -108,7 +109,9 @@ export function DayView({ date, showNav = true }: { date: string; showNav?: bool
           {workouts.length === 0 ? (
             <div className="muted">还没有训练记录</div>
           ) : (
-            workouts.map((workout) => <WorkoutLine key={workout.id} workout={workout} />)
+            workouts.map((workout) => (
+              <WorkoutLine key={workout.id} workout={workout} onDelete={() => deleteWorkout(workout.id)} />
+            ))
           )}
         </div>
       </section>
@@ -160,6 +163,19 @@ function MealList({
             <div className="muted tiny" style={{ textAlign: "right" }}>
               {food.nutrients ? formatNutrient(food.nutrients) : ""}
             </div>
+            <button
+              className="btn linkish"
+              type="button"
+              aria-label={`删除 ${food.name}`}
+              onClick={() => {
+                const msg = batch
+                  ? `删除这条记录，并把 ${formatQty(food.amount, food.unit)} 加回库存？`
+                  : `删除「${formatQty(food.amount, food.unit)}${food.name}」？`;
+                if (confirm(msg)) void deleteFood(food.id);
+              }}
+            >
+              删除
+            </button>
           </div>
         );
       })}
@@ -167,7 +183,7 @@ function MealList({
   );
 }
 
-function WorkoutLine({ workout }: { workout: Workout }) {
+function WorkoutLine({ workout, onDelete }: { workout: Workout; onDelete: () => void }) {
   const bits = [
     workout.durationMin ? `${workout.durationMin} 分钟` : null,
     workout.distanceKm ? `${workout.distanceKm} km` : null,
@@ -180,6 +196,16 @@ function WorkoutLine({ workout }: { workout: Workout }) {
         <div className="muted tiny">{workout.notes || bits.join(" · ")}</div>
       </div>
       <div className="muted tiny">{bits[0]}</div>
+      <button
+        className="btn linkish"
+        type="button"
+        aria-label={`删除 ${workout.name}`}
+        onClick={() => {
+          if (confirm(`删除训练「${workout.name}」？`)) onDelete();
+        }}
+      >
+        删除
+      </button>
     </div>
   );
 }
@@ -213,7 +239,13 @@ function PhotoStrip({ photos, date }: { photos: { id: string; blob: Blob }[]; da
       {photos.length > 0 ? (
         <div className="photo-row" style={{ marginTop: 8 }}>
           {photos.map((photo) => (
-            <Photo key={photo.id} blob={photo.blob} />
+            <Photo
+              key={photo.id}
+              blob={photo.blob}
+              onDelete={() => {
+                if (confirm("删除这张照片？")) void deletePhoto(photo.id);
+              }}
+            />
           ))}
         </div>
       ) : (
@@ -225,7 +257,14 @@ function PhotoStrip({ photos, date }: { photos: { id: string; blob: Blob }[]; da
   );
 }
 
-function Photo({ blob }: { blob: Blob }) {
+function Photo({ blob, onDelete }: { blob: Blob; onDelete: () => void }) {
   const url = URL.createObjectURL(blob);
-  return <img src={url} alt="" onLoad={() => setTimeout(() => URL.revokeObjectURL(url), 1000)} />;
+  return (
+    <div className="photo-wrap">
+      <img src={url} alt="" onLoad={() => setTimeout(() => URL.revokeObjectURL(url), 1000)} />
+      <button type="button" aria-label="删除照片" onClick={onDelete}>
+        ×
+      </button>
+    </div>
+  );
 }
