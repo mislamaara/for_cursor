@@ -3,6 +3,7 @@ import { consumeBatch, pickOpenBatch, remainingLabel, restoreBatch } from "./bat
 import { nutrientsForPortions } from "./nutrition";
 import { parseQuickLog } from "./parser";
 import { buildAiSummary } from "./aiSummary";
+import { buildDayExport } from "./exportDay";
 import type { Batch, Recipe } from "../types";
 
 const cake: Recipe = {
@@ -111,5 +112,52 @@ describe("ai summary", () => {
     });
     expect(text).toContain("4块榴莲芝士蛋糕 ← 榴莲芝士蛋糕 8/19批次");
     expect(text).toContain("剩余 18块 / 30块");
+  });
+});
+
+describe("day export", () => {
+  it("exports a single day with batch links and totals", () => {
+    const text = buildDayExport({
+      date: "2026-08-21",
+      recipes: [cake],
+      batches: [{ ...batch, remainingAmount: 18 }],
+      foods: [
+        {
+          id: "f1",
+          date: "2026-08-21",
+          meal: "breakfast",
+          name: "榴莲芝士蛋糕",
+          amount: 4,
+          unit: "块",
+          batchId: "b1",
+          recipeId: "cake",
+          notes: "4/30",
+          createdAt: "",
+        },
+        {
+          id: "f2",
+          date: "2026-08-21",
+          meal: "lunch",
+          name: "米饭",
+          amount: 1,
+          unit: "份",
+          createdAt: "",
+        },
+      ],
+      workouts: [
+        {
+          id: "w1",
+          date: "2026-08-21",
+          name: "核心",
+          durationMin: 30,
+          createdAt: "",
+        },
+      ],
+    });
+    expect(text).toContain("# 膳食本 · 8月21日 周五");
+    expect(text).toContain("4块榴莲芝士蛋糕 ← 榴莲芝士蛋糕 8/19批次（4/30）");
+    expect(text).toContain("## 运动");
+    expect(text).toContain("- 核心 · 30 分钟");
+    expect(text).not.toContain("自制库存");
   });
 });

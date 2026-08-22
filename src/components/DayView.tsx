@@ -1,3 +1,4 @@
+import { DayExportPanel } from "./DayExportPanel";
 import { Link } from "react-router-dom";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db";
@@ -117,6 +118,8 @@ export function DayView({ date, showNav = true }: { date: string; showNav?: bool
       </section>
 
       <PhotoStrip photos={photos} date={date} />
+
+      <DayExportPanel date={date} recipes={recipes} batches={batches} foods={foods} workouts={workouts} />
 
       <div className="fab-row">
         <Link className="btn terra" to={`/add/food?date=${date}`}>

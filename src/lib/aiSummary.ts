@@ -1,5 +1,6 @@
 import type { Batch, FoodEntry, Recipe, Workout } from "../types";
 import { formatDate, formatShort } from "./dates";
+import { describeFood } from "./exportDay";
 import { formatNutrientLine, sumOptional } from "./nutrition";
 import { remainingLabel } from "./batches";
 
@@ -53,17 +54,4 @@ export function buildAiSummary(args: {
   }
 
   return lines.join("\n").trim() + "\n";
-}
-
-function describeFood(
-  food: FoodEntry,
-  batchById: Map<string, Batch>,
-  recipeById: Map<string, Recipe>,
-): string {
-  const qty = `${food.amount}${food.unit}${food.name}`;
-  if (!food.batchId) return qty;
-  const batch = batchById.get(food.batchId);
-  if (!batch) return `${qty}（自制批次已删除）`;
-  const recipe = recipeById.get(batch.recipeId);
-  return `${qty} ← ${recipe?.name ?? food.name} ${formatShort(batch.madeOn)}批次`;
 }

@@ -442,6 +442,16 @@ textarea {
   font-size: 13px;
 }
 
+.export-preview {
+  white-space: pre-wrap;
+  max-height: 180px;
+  overflow: auto;
+  margin: 10px 0 0;
+  padding: 10px;
+  background: var(--paper-2);
+  border-radius: 12px;
+}
+
 .tiny {
   font-size: 12px;
 }
