@@ -12,6 +12,8 @@ GitHub Actions 已经能成功构建，但仓库还没打开 Pages，所以 depl
 4. 点 **Run workflow** → **Run workflow**，等 1–2 分钟  
 5. 访问：https://mislamaara.github.io/for_cursor/
 
+> push 后如果只有 **deploy** 红、**CI** 是绿的，说明代码没问题，只是 Pages 还没开。
+
 ## iPhone 使用
 
 Safari 打开上面的地址 → **分享 → 添加到主屏幕**。
