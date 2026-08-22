@@ -14,6 +14,14 @@
 
 数据存在浏览器 IndexedDB 里，不会上传。iPhone Safari 也可以用。
 
+### 线上地址（需先在 GitHub 打开 Pages）
+
+启用方法见 [DEPLOY.md](./DEPLOY.md)。启用后访问：
+
+**https://mislamaara.github.io/for_cursor/**
+
+### 本地运行
+
 ```bash
 npm install
 npm run dev
