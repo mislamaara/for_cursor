@@ -1,12 +1,24 @@
 import { db } from "./db";
-import { newId } from "./lib/dates";
 import { nutrientsForPortions } from "./lib/nutrition";
 import type { Batch, FoodEntry, Recipe, Workout } from "./types";
 
 const SEED_KEY = "seeded";
 const SEED_VERSION = 1;
 
-export async function ensureSeed(): Promise<void> {
+let inflight: Promise<void> | null = null;
+
+export function ensureSeed(): Promise<void> {
+  if (!inflight) {
+    inflight = seedOnce().catch((err) => {
+      inflight = null;
+      throw err;
+    });
+  }
+  return inflight;
+}
+
+async function seedOnce(): Promise<void> {
+  seedFoodSeq = 0;
   const flag = await db.meta.get(SEED_KEY);
   if (flag?.value === SEED_VERSION) return;
   if (flag) return;
@@ -139,14 +151,14 @@ export async function ensureSeed(): Promise<void> {
 
   const workouts: Workout[] = [
     {
-      id: newId(),
+      id: "seed-workout-0818",
       date: "2026-08-18",
       name: "下肢",
       notes: "力量训练",
       createdAt: "2026-08-18T20:00:00.000Z",
     },
     {
-      id: newId(),
+      id: "seed-workout-0820",
       date: "2026-08-20",
       name: "核心 + 室内跑",
       durationMin: 50.5,
@@ -158,13 +170,17 @@ export async function ensureSeed(): Promise<void> {
   ];
 
   await db.transaction("rw", db.recipes, db.batches, db.foods, db.workouts, db.meta, async () => {
-    await db.recipes.bulkAdd([toast, cake, spread]);
-    await db.batches.bulkAdd([toastBatch, cakeBatch, spreadBatch]);
-    await db.foods.bulkAdd(foods);
-    await db.workouts.bulkAdd(workouts);
+    const again = await db.meta.get(SEED_KEY);
+    if (again) return;
+    await db.recipes.bulkPut([toast, cake, spread]);
+    await db.batches.bulkPut([toastBatch, cakeBatch, spreadBatch]);
+    await db.foods.bulkPut(foods);
+    await db.workouts.bulkPut(workouts);
     await db.meta.put({ key: SEED_KEY, value: SEED_VERSION });
   });
 }
+
+let seedFoodSeq = 0;
 
 function f(
   date: string,
@@ -177,8 +193,9 @@ function f(
   recipeId?: string,
   notes?: string,
 ): FoodEntry {
+  seedFoodSeq += 1;
   return {
-    id: newId(),
+    id: `seed-food-${String(seedFoodSeq).padStart(3, "0")}`,
     date,
     meal,
     name,

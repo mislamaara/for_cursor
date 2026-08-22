@@ -19,8 +19,10 @@ export function IconBook() {
 export function IconKitchen() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M4 18h16v2H4zM6 18c1.5-6 3.5-10 6-10s4.5 4 6 10" />
-      <path d="M12 8V5" />
+      <path d="M4 16.5c0-2 2.2-3.5 8-3.5s8 1.5 8 3.5v1.2c0 .7-1.8 1.8-8 1.8s-8-1.1-8-1.8v-1.2Z" />
+      <path d="M5.5 15.2c.6-4.2 2.8-7.2 6.5-7.2s5.9 3 6.5 7.2" />
+      <path d="M12 8V5.5" />
+      <circle cx="12" cy="4.5" r="1" />
     </svg>
   );
 }
