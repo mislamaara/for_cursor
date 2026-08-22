@@ -119,7 +119,14 @@ export function DayView({ date, showNav = true }: { date: string; showNav?: bool
 
       <PhotoStrip photos={photos} date={date} />
 
-      <DayExportPanel date={date} recipes={recipes} batches={batches} foods={foods} workouts={workouts} />
+      <DayExportPanel
+        date={date}
+        recipes={recipes}
+        batches={batches}
+        foods={foods}
+        workouts={workouts}
+        photos={photos}
+      />
 
       <div className="fab-row">
         <Link className="btn terra" to={`/add/food?date=${date}`}>

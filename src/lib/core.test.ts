@@ -160,4 +160,33 @@ describe("day export", () => {
     expect(text).toContain("- 核心 · 30 分钟");
     expect(text).not.toContain("自制库存");
   });
+
+  it("lists photo paths when exporting a day with images", () => {
+    const text = buildDayExport({
+      date: "2026-08-22",
+      recipes: [],
+      batches: [],
+      foods: [],
+      workouts: [],
+      photos: [
+        {
+          id: "p1",
+          kind: "day",
+          refId: "2026-08-22",
+          blob: new Blob([], { type: "image/jpeg" }),
+          createdAt: "",
+        },
+        {
+          id: "p2",
+          kind: "day",
+          refId: "2026-08-22",
+          blob: new Blob([], { type: "image/png" }),
+          createdAt: "",
+        },
+      ],
+    });
+    expect(text).toContain("## 照片");
+    expect(text).toContain("photos/01.jpg");
+    expect(text).toContain("photos/02.png");
+  });
 });
