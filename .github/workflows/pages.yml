@@ -1,8 +1,8 @@
 name: Deploy Pages
 
-# 只在手动触发时部署，避免 Pages 未开启时每次 push 都报 deploy 失败。
-# 先在仓库 Settings → Pages 里选 GitHub Actions，再 Run workflow。
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
