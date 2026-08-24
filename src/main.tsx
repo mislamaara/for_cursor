@@ -2,8 +2,11 @@ import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
+import { AuthProvider } from "./context/AuthContext";
 import { ensureSeed } from "./seed";
 import "./index.css";
+
+const basename = import.meta.env.BASE_URL.replace(/\/$/, "") || "/";
 
 function Root() {
   const [ready, setReady] = useState(false);
@@ -19,9 +22,11 @@ function Root() {
   if (!ready) return <div className="app-shell muted">正在打开膳食本…</div>;
 
   return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename={basename}>
+        <App />
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

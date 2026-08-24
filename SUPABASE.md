@@ -71,21 +71,21 @@ Supabase → **Project Settings** → **API**：
 
 ---
 
-## 第六步：等应用接上同步
+## 第六步：重新部署线上版
 
-当前版本数据仍在**浏览器 IndexedDB**。接 Supabase 后会变成：
+代码已支持云同步。Secrets 配好后：
 
-```
-本机 IndexedDB  ←→  登录后同步  ←→  Supabase 云
-     文字记录              ↑              PostgreSQL
-     照片文件              ↑              Storage 桶
-```
+1. https://github.com/mislamaara/for_cursor/actions/workflows/pages.yml  
+2. **Run workflow**  
+3. 打开 https://mislamaara.github.io/for_cursor/me  
 
-**你完成上面 1–5 步后告诉我**，或把 Project URL 是否已建好、Email 登录是否已打开说一下，我可以继续在代码里加：
+## 第七步：使用同步
 
-- 邮箱登录页  
-- 上传 / 下载同步  
-- 「我的」页一键同步按钮  
+1. **我的** → 输入邮箱 → **发送登录链接** → 点邮件里的链接  
+2. 回到 **我的** 页，点 **上传到云**（第一台设备）  
+3. 另一台设备同样登录后，点 **从云下载**  
+
+文字进 PostgreSQL，照片进 `kitchen-photos` 桶。
 
 ---
 

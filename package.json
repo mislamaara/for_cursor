@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
     "jszip": "^3.10.1",
